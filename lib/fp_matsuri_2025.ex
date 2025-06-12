@@ -3,16 +3,10 @@ defmodule FpMatsuri2025 do
   Documentation for `FpMatsuri2025`.
   """
 
-  @doc """
-  Hello world.
+  require Logger
 
-  ## Examples
-
-      iex> FpMatsuri2025.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def start do
+    Logger.info("FP MATSURI start!!!")
+    :ok
   end
 end
