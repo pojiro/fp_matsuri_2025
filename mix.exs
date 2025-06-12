@@ -36,7 +36,7 @@ defmodule FpMatsuri2025.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :runtime_tools],
+      extra_applications: extra_applications(Mix.target()),
       mod: {FpMatsuri2025.Application, []}
     ]
   end
@@ -80,6 +80,14 @@ defmodule FpMatsuri2025.MixProject do
       {:nerves_system_grisp2, "~> 0.8", runtime: false, targets: :grisp2},
       {:nerves_system_mangopi_mq_pro, "~> 0.6", runtime: false, targets: :mangopi_mq_pro}
     ] ++ phoenix_deps()
+  end
+
+  defp extra_applications(:host) do
+    [:logger, :runtime_tools, :wx, :observer]
+  end
+
+  defp extra_applications(_) do
+    [:logger, :runtime_tools, :os_mon]
   end
 
   def release do
