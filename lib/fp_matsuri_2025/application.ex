@@ -39,6 +39,11 @@ defmodule FpMatsuri2025.Application do
     end
   else
     defp target_children() do
+      # NOTE: work around to stop watchers on targets
+      Application.get_env(:fp_matsuri_2025, FpMatsuri2025Web.Endpoint)
+      |> Keyword.put(:watchers, [])
+      |> then(&Application.put_env(:fp_matsuri_2025, FpMatsuri2025Web.Endpoint, &1))
+
       [
         # Children for all targets except host
         # Starts a worker by calling: Target.Worker.start_link(arg)
