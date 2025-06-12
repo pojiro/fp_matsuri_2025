@@ -23,10 +23,12 @@ defmodule FpMatsuri2025.MixProject do
       app: @app,
       version: @version,
       elixir: "~> 1.17",
+      elixirc_paths: elixirc_paths(Mix.env()),
       archives: [nerves_bootstrap: "~> 1.13"],
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       releases: [{@app, release()}],
+      aliases: aliases(),
       preferred_cli_target: [run: :host, test: :host]
     ]
   end
@@ -38,6 +40,10 @@ defmodule FpMatsuri2025.MixProject do
       mod: {FpMatsuri2025.Application, []}
     ]
   end
+
+  # Specifies which paths to compile per environment.
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
@@ -73,7 +79,7 @@ defmodule FpMatsuri2025.MixProject do
       {:nerves_system_x86_64, "~> 1.24", runtime: false, targets: :x86_64},
       {:nerves_system_grisp2, "~> 0.8", runtime: false, targets: :grisp2},
       {:nerves_system_mangopi_mq_pro, "~> 0.6", runtime: false, targets: :mangopi_mq_pro}
-    ]
+    ] ++ phoenix_deps()
   end
 
   def release do
@@ -85,6 +91,50 @@ defmodule FpMatsuri2025.MixProject do
       include_erts: &Nerves.Release.erts/0,
       steps: [&Nerves.Release.init/1, :assemble],
       strip_beams: Mix.env() == :prod or [keep: ["Docs"]]
+    ]
+  end
+
+  def aliases() do
+    [
+      firmware: ["assets.setup", "assets.build", "assets.deploy", "firmware"]
+    ] ++ phoenix_aliases()
+  end
+
+  defp phoenix_deps() do
+    [
+      {:phoenix, "~> 1.7.21"},
+      {:phoenix_html, "~> 4.1"},
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:phoenix_live_view, "~> 1.0"},
+      {:floki, ">= 0.30.0", only: :test},
+      {:phoenix_live_dashboard, "~> 0.8.3"},
+      {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
+      {:heroicons,
+       github: "tailwindlabs/heroicons",
+       tag: "v2.1.1",
+       sparse: "optimized",
+       app: false,
+       compile: false,
+       depth: 1},
+      {:telemetry_metrics, "~> 1.0"},
+      {:telemetry_poller, "~> 1.0"},
+      {:jason, "~> 1.2"},
+      {:dns_cluster, "~> 0.1.1"},
+      {:bandit, "~> 1.5"}
+    ]
+  end
+
+  defp phoenix_aliases do
+    [
+      setup: ["deps.get", "assets.setup", "assets.build"],
+      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
+      "assets.build": ["tailwind fp_matsuri_2025", "esbuild fp_matsuri_2025"],
+      "assets.deploy": [
+        "tailwind fp_matsuri_2025 --minify",
+        "esbuild fp_matsuri_2025 --minify",
+        "phx.digest"
+      ]
     ]
   end
 end

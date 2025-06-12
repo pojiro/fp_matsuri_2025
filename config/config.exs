@@ -18,8 +18,14 @@ config :nerves, :firmware, rootfs_overlay: "rootfs_overlay"
 
 config :nerves, source_date_epoch: "1749710257"
 
+import_config "phoenix/config.exs"
+
 if Mix.target() == :host do
   import_config "host.exs"
 else
+  config :fp_matsuri_2025, FpMatsuri2025Web.Endpoint,
+    server: true,
+    http: [ip: {0, 0, 0, 0}, port: 80]
+
   import_config "target.exs"
 end

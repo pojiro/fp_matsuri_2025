@@ -18,3 +18,16 @@ erl_crash.dump
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# Ignore assets that are produced by build tools.
+/priv/static/assets/
+
+# Ignore digested assets cache.
+/priv/static/cache_manifest.json
+
+# Ignore generated assets, mix assets.deploy
+/priv/static/*-*.ico
+/priv/static/*-*.txt
+/priv/static/*.txt.gz
+/priv/static/images/*-*.svg
+/priv/static/images/*.svg.gz
