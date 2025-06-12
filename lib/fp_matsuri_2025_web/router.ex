@@ -17,7 +17,8 @@ defmodule FpMatsuri2025Web.Router do
   scope "/", FpMatsuri2025Web do
     pipe_through :browser
 
-    get "/", PageController, :home
+    # get "/", PageController, :home
+    live "/", Live.Home
   end
 
   # Other scopes may use custom stacks.

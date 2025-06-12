@@ -17,7 +17,7 @@ defmodule FpMatsuri2025.LedSupervisor do
     Supervisor.init(children, strategy: :one_for_one)
   end
 
-  def pattern() do
+  def flush_leds() do
     leds = [
       FpMatsuri2025.Led1,
       FpMatsuri2025.Led2,
@@ -29,21 +29,21 @@ defmodule FpMatsuri2025.LedSupervisor do
       leds
       |> Enum.each(fn name ->
         FpMatsuri2025.Led.red(name)
-        Process.sleep(300)
+        Process.sleep(100)
       end)
 
     :ok =
       Enum.reverse(leds)
       |> Enum.each(fn name ->
         FpMatsuri2025.Led.green(name)
-        Process.sleep(300)
+        Process.sleep(100)
       end)
 
     :ok =
       leds
       |> Enum.each(fn name ->
         FpMatsuri2025.Led.off(name)
-        Process.sleep(300)
+        Process.sleep(100)
       end)
   end
 
